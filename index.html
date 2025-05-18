@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Days Since</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem 3rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .days {
+            font-size: 3rem;
+            color: #0078d7;
+            margin-top: 1rem;
+        }
+        .error {
+            color: #d70022;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="label"></div>
+        <div id="days" class="days"></div>
+        <div id="error" class="error"></div>
+    </div>
+    <script>
+        function getQueryParams() {
+            const params = {};
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+                params[key.toLowerCase()] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        function calculateDays(dateFromStr) {
+            const dateFrom = new Date(dateFromStr);
+            if (isNaN(dateFrom.getTime())) return null;
+            const now = new Date();
+            // Zero out time for both dates
+            dateFrom.setHours(0,0,0,0);
+            now.setHours(0,0,0,0);
+            const diff = now - dateFrom;
+            return Math.floor(diff / (1000 * 60 * 60 * 24));
+        }
+
+        (function main() {
+            const params = getQueryParams();
+            if (params.title) {
+                document.title = params.title;
+                const pageTitle = document.getElementById('page-title');
+                if (pageTitle) pageTitle.textContent = params.title;
+            }
+            const label = params.text || "Days since";
+            const dateFrom = params.datefrom;
+            const labelDiv = document.getElementById('label');
+            const daysDiv = document.getElementById('days');
+            const errorDiv = document.getElementById('error');
+
+            if (!dateFrom) {
+                errorDiv.textContent = 'Missing required parameter: datefrom (format: YYYY-MM-DD)';
+                labelDiv.textContent = '';
+                daysDiv.textContent = '';
+                return;
+            }
+
+            const days = calculateDays(dateFrom);
+            if (days === null) {
+                errorDiv.textContent = 'Invalid date format for datefrom. Use YYYY-MM-DD.';
+                labelDiv.textContent = '';
+                daysDiv.textContent = '';
+                return;
+            }
+
+            errorDiv.textContent = '';
+            labelDiv.textContent = label;
+            daysDiv.textContent = days;
+        })();
+    </script>
+</body>
+</html>
