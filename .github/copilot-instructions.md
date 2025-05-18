@@ -11,7 +11,7 @@ A simple static one file HTML project. This page will display the number of days
 - Github actions.
 
 #Deploy
-The page will be deployd as a static page on github. Deploy is done using a github action that is triggered every time a new change is commited on the main branch.
+The page will be deployd as a static page on github from the main branch. 
 
 #Deveplopment
 Development is done using VS code. Git is used as the version control system.
